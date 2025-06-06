@@ -6,7 +6,7 @@ import {
   getUserProfile,
   updateUserProfile,
 } from '../controllers/userController.js';
-import { registerValidator } from '../validators/userValidator.js';
+import { registerValidator } from '../utils/validators/userValidator.js';
 import { protect } from '../middlewares/authMiddleware.js';
 // Add input validation middleware here if needed
 

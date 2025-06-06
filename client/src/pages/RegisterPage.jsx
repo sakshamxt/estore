@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
@@ -22,7 +22,6 @@ const formSchema = z.object({
 const RegisterPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { toast } = useToast();
 
   const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
@@ -37,10 +36,10 @@ const RegisterPage = () => {
 
   useEffect(() => {
     if (isError) {
-      toast({ variant: "destructive", title: "Registration failed", description: message });
+      toast.error(message || "An error occurred while registering.");    
     }
     if (isSuccess) {
-      toast({ title: "Registration successful!", description: "You can now log in." });
+      toast.success("Registration successful! Redirecting to login...");
       navigate('/login');
     }
     dispatch(reset());

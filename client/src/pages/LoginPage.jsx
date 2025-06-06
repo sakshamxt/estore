@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
@@ -21,7 +21,6 @@ const formSchema = z.object({
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { toast } = useToast();
 
   const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
@@ -35,7 +34,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (isError) {
-      toast({ variant: "destructive", title: "Login failed", description: message });
+      toast.error(message || "An error occurred while logging in.");  
     }
     if (isSuccess || user) {
       navigate('/');

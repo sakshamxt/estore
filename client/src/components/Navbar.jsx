@@ -17,6 +17,9 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
+  const { items: cartItems } = useSelector((state) => state.cart);
+  const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
   const onLogout = () => {
     dispatch(logout());
     dispatch(reset());
@@ -39,10 +42,15 @@ const Navbar = () => {
           <Button variant="ghost" size="icon">
             <Search className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon">
-            <Link to="/cart">
-              <ShoppingCart className="h-5 w-5" />
-            </Link>
+          <Button variant="ghost" size="icon" className="relative">
+              <Link to="/cart">
+                  <ShoppingCart className="h-5 w-5" />
+                  {isAuthenticated && totalCartItems > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                      {totalCartItems}
+                    </span>
+                  )}
+              </Link>
           </Button>
 
           {isAuthenticated ? (

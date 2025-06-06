@@ -3,6 +3,9 @@ import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import Order from '../models/orderModel.js';
 import Product from '../models/productModel.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Initialize Razorpay
 const razorpay = new Razorpay({

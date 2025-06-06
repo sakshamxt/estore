@@ -9,7 +9,9 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from '@/components/ui/textarea';
-import { Minus, Plus } from 'lucide-react';
+import { Minus, Plus, Loader2 } from 'lucide-react';
+import { addToCart } from '@/features/cart/cartSlice';
+import { toast } from 'sonner';
 
 // A function to calculate average rating
 const getAverageRating = (reviews) => {
@@ -24,6 +26,9 @@ const ProductDetailPage = () => {
   const [quantity, setQuantity] = useState(1);
   const { product, isLoading, isError, message } = useSelector((state) => state.products);
 
+  const { isLoading: isCartLoading } = useSelector((state) => state.cart);
+
+
   useEffect(() => {
     dispatch(fetchProductById(id));
     // Reset state on component unmount
@@ -31,6 +36,19 @@ const ProductDetailPage = () => {
       dispatch(reset());
     };
   }, [id, dispatch]);
+
+
+  const handleAddToCart = () => {
+        dispatch(addToCart({ productId: product._id, quantity }))
+          .unwrap()
+          .then(() => {
+            toast.success("Product added to cart successfully!");  
+          })
+          .catch((error) => {
+            toast.error(error.message || "Failed to add product to cart.");  
+          });
+  };
+
 
   const handleQuantityChange = (amount) => {
     setQuantity((prev) => Math.max(1, prev + amount));
@@ -88,7 +106,9 @@ const ProductDetailPage = () => {
               </Button>
             </div>
           </div>
-          <Button size="lg" className="w-full">Add to Cart</Button>
+          <Button size="lg" className="w-full" onClick={handleAddToCart} disabled={isCartLoading}>
+              {isCartLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Add to Cart"}
+          </Button>
         </div>
       </div>
 

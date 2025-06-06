@@ -45,6 +45,10 @@ const orderSchema = new mongoose.Schema({
     update_time: { type: String },
     email_address: { type: String },
   },
+  couponApplied: {
+    code: { type: String },
+    discountAmount: { type: Number },
+  },
   itemsPrice: {
     type: Number,
     required: true,

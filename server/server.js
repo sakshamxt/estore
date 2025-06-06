@@ -9,6 +9,12 @@ import adminCategoryRoutes from './routes/admin/categoryRoutes.js';
 import adminProductRoutes from './routes/admin/productRoutes.js';
 import publicCategoryRoutes from './routes/public/categoryRoutes.js';
 import publicProductRoutes from './routes/public/productRoutes.js';
+import wishlistRoutes from './routes/wishlistRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
+import adminOrderRoutes from './routes/admin/orderRoutes.js';
+import couponRoutes from './routes/couponRoutes.js';
+import adminCouponRoutes from './routes/admin/couponRoutes.js';
+import adminRoutes from './routes/admin/adminRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -34,13 +40,21 @@ app.use('/api/addresses', addressRoutes);
 // Public routes
 app.use('/api/categories', publicCategoryRoutes);
 app.use('/api/products', publicProductRoutes);
+app.use('/api/coupons', couponRoutes);
+
+// User specific routes
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Admin routes
 app.use('/api/admin/categories', adminCategoryRoutes);
 app.use('/api/admin/products', adminProductRoutes);
+app.use('/api/admin/orders', adminOrderRoutes);
+app.use('/api/admin/coupons', adminCouponRoutes);
+app.use('/api/admin', adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running in development mode on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
