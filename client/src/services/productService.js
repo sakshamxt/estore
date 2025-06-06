@@ -8,14 +8,20 @@ const getProducts = async (params = {}) => {
 };
 
 // Fetch a single product by its ID
-const getProductById = async (id) => {
-  const response = await api.get(`/products/${id}`);
+const getProductBySlug = async (slug) => {
+  const response = await api.get(`/products/${slug}`);
   return response.data;
+}
+
+const addReview = async (productId, reviewData) => {
+    const response = await api.post(`/products/${productId}/reviews`, reviewData);
+    return response.data;
 }
 
 const productService = {
   getProducts,
-  getProductById,
+  getProductBySlug,
+  addReview
 };
 
 export default productService;

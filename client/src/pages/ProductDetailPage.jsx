@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProductById, reset } from '@/features/products/productSlice';
+import { fetchProductBySlug, reset } from '@/features/products/productSlice';
 import ProductImageGallery from '@/components/ProductImageGallery';
 import StarRating from '@/components/StarRating';
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,7 @@ const getAverageRating = (reviews) => {
 };
 
 const ProductDetailPage = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
   const { product, isLoading, isError, message } = useSelector((state) => state.products);
@@ -30,12 +30,12 @@ const ProductDetailPage = () => {
 
 
   useEffect(() => {
-    dispatch(fetchProductById(id));
+    dispatch(fetchProductBySlug(slug));
     // Reset state on component unmount
     return () => {
       dispatch(reset());
     };
-  }, [id, dispatch]);
+  }, [slug, dispatch]);
 
 
   const handleAddToCart = () => {

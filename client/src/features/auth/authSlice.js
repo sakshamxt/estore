@@ -13,10 +13,25 @@ const initialState = {
   message: '',
 };
 
+
+
 // Register user
 export const register = createAsyncThunk('auth/register', async (userData, thunkAPI) => {
   try {
     return await authService.register(userData);
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    return thunkAPI.rejectWithValue(message);
+  }
+});
+
+
+export const verifyOtp = createAsyncThunk('auth/verifyOtp', async (otpData, thunkAPI) => {
+  try {
+    return await authService.verifyOtp(otpData);
   } catch (error) {
     const message =
       (error.response && error.response.data && error.response.data.message) ||
@@ -70,6 +85,21 @@ export const authSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
         state.user = null;
+      })
+      .addCase(verifyOtp.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(verifyOtp.fulfilled, (state, action) => {
+        // Successful OTP verification should log the user in
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.isAuthenticated = true;
+        state.user = action.payload;
+      })
+      .addCase(verifyOtp.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
       })
       .addCase(login.pending, (state) => {
         state.isLoading = true;

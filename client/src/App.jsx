@@ -19,6 +19,7 @@ const OrderHistoryPage = lazy(() => import('./pages/profile/OrderHistoryPage'));
 const AddressManagementPage = lazy(() => import('./pages/profile/AddressManagementPage'));
 const WishlistPage = lazy(() => import('./pages/profile/WishlistPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage')); // Import NotFoundPage
+const VerifyOtpPage = lazy(() => import('./pages/VerifyOtpPage'));
 
 // Simple full-page loader for Suspense fallback
 const FullPageLoader = () => (
@@ -44,10 +45,11 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<HomePage />} />
             <Route path="shop" element={<ShopPage />} />
-            <Route path="product/:id" element={<ProductDetailPage />} />
+            <Route path="product/:slug" element={<ProductDetailPage />} />
             <Route path="cart" element={<CartPage />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="register" element={<RegisterPage />} />
+             <Route path="verify-otp" element={<VerifyOtpPage />} />
             
             {/* Protected Routes */}
             <Route path="checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />

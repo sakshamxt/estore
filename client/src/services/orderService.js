@@ -10,14 +10,14 @@ const createOrder = async (orderData) => {
 };
 
 const getMyOrders = async () => {
-  const response = await api.get(`${API_URL}/my`);
+  const response = await api.get(`${API_URL}/myorders`);
   return response.data;
 };
 
 // Verify a payment
 const verifyPayment = async (verificationData) => {
   // verificationData: { razorpay_order_id, razorpay_payment_id, razorpay_signature }
-  const response = await api.post(`${API_URL}/verify-payment`, verificationData);
+  const response = await api.post(`${API_URL}/razorpay/verify-payment`, verificationData);
   return response.data;
 };
 

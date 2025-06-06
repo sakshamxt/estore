@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
-import { resetCart } from '@/features/cart/cartSlice';
+
 
 // Reusable Order Summary Component
 const OrderSummary = ({ cartItems }) => {
@@ -76,9 +76,10 @@ const CheckoutPage = () => {
   
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isAddAddressOpen, setAddAddressOpen] = useState(false);
+
+  const { items: cartItems } = useSelector(state => state.cart);
   
   const { user } = useSelector(state => state.auth);
-  const { items: cartItems } = useSelector(state => state.cart);
   const { addresses, isLoading: isAddressLoading } = useSelector(state => state.user);
   const { razorpayOrder, order, isLoading, isError, message } = useSelector(state => state.order);
 
@@ -124,10 +125,48 @@ const CheckoutPage = () => {
   
   const handlePlaceOrder = () => {
     if (!selectedAddress) {
-      toast({ variant: "destructive", title: "No Address Selected", description: "Please select a shipping address." });
+      toast.error("Please select a shipping address");
       return;
     }
-    dispatch(createOrder({ shippingAddressId: selectedAddress, paymentMethod: 'RAZORPAY' }));
+
+    const shippingAddress = addresses.find(addr => addr._id === selectedAddress);
+    if (!shippingAddress) {
+      toast.error("Selected address not found");  
+      return;
+    }
+    const orderItems = cartItems.map(item => ({
+        name: item.product.name,
+        quantity: item.quantity,
+        image: item.product.images[0],
+        price: item.product.price,
+        product: item.product._id
+    }));
+
+    const itemsPrice = cartItems.reduce((acc, item) => acc + item.quantity * item.product.price, 0);
+    const taxPrice = itemsPrice * 0.18; // Example 18% tax
+    const shippingPrice = itemsPrice > 500 ? 0 : 50;
+    const totalPrice = itemsPrice + taxPrice + shippingPrice;
+
+    const orderData = {
+        orderItems,
+        shippingAddress: {
+            fullName: shippingAddress.name, // Assuming your address form saves a 'name' field
+            streetAddress: shippingAddress.street,
+            city: shippingAddress.city,
+            state: shippingAddress.state,
+            postalCode: shippingAddress.postalCode,
+            country: shippingAddress.country,
+            phoneNumber: shippingAddress.phoneNumber // Assuming you have this field in your form
+        },
+        paymentMethod: 'Razorpay',
+        itemsPrice,
+        taxPrice,
+        shippingPrice,
+        totalPrice,
+    };
+
+    dispatch(createOrder(orderData));
+    
   };
 
   if (cartItems.length === 0 && !order) {

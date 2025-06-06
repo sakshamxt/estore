@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 
 const formSchema = z.object({
-  fullName: z.string().min(2, { message: "Full name must be at least 2 characters." }),
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   password: z.string().min(8, { message: "Password must be at least 8 characters." }),
 });
@@ -28,7 +28,7 @@ const RegisterPage = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: "",
+      name: "",
       email: "",
       password: "",
     },
@@ -39,11 +39,11 @@ const RegisterPage = () => {
       toast.error(message || "An error occurred while registering.");    
     }
     if (isSuccess) {
-      toast.success("Registration successful! Redirecting to login...");
-      navigate('/login');
+      toast.success("Please check your email for verification code.");
+      navigate('/verify-otp', { state: { email: form.getValues('email') } });
     }
     dispatch(reset());
-  }, [isError, isSuccess, message, navigate, dispatch, toast]);
+  }, [isError, isSuccess, message, navigate, dispatch, toast, form]);
 
   const onSubmit = (values) => {
     dispatch(register(values));
@@ -61,10 +61,10 @@ const RegisterPage = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
                 control={form.control}
-                name="fullName"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Full Name</FormLabel>
+                    <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input placeholder="John Doe" {...field} />
                     </FormControl>

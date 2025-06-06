@@ -8,12 +8,12 @@ const getWishlist = async () => {
 };
 
 const addItemToWishlist = async (productId) => {
-  const response = await api.post(API_URL, { productId });
+  const response = await api.post(`${API_URL}/add`, { productId });
   return response.data;
 };
 
 const removeItemFromWishlist = async (productId) => {
-  const response = await api.delete(`${API_URL}/${productId}`);
+  const response = await api.delete(`${API_URL}/remove/${productId}`);
   return response.data;
 };
 

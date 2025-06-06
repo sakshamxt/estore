@@ -8,7 +8,7 @@ import { addToWishlist, removeFromWishlist } from '@/features/wishlist/wishlistS
 // UI Components & Utilities
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from 'sonner'
 import { cn } from '@/lib/utils';
 
 // Icons
@@ -17,14 +17,13 @@ import { Heart, Loader2 } from 'lucide-react';
 const ProductCard = ({ product }) => {
   // Initialize hooks
   const dispatch = useDispatch();
-  const { toast } = useToast();
 
   // Select relevant state from Redux store
   const { isLoading: isCartLoading } = useSelector((state) => state.cart);
   const { itemIds: wishlistItems } = useSelector((state) => state.wishlist);
 
   // Determine if the product is already in the wishlist for UI state
-  const isWishlisted = wishlistItems.includes(product._id);
+  const isWishlisted = wishlistItems.includes(product.slug);
 
   /**
    * Formats a number into Indian Rupee currency format.
@@ -43,20 +42,13 @@ const ProductCard = ({ product }) => {
    * Dispatches the addToCart action and shows a toast notification.
    */
   const handleAddToCart = () => {
-    dispatch(addToCart({ productId: product._id, quantity: 1 }))
+    dispatch(addToCart({ productId: product.slug, quantity: 1 }))
       .unwrap()
       .then(() => {
-        toast({
-          title: "Added to Cart",
-          description: `"${product.name}" is now in your cart.`,
-        });
+        toast.success("Item added to cart successfully!");
       })
       .catch((error) => {
-        toast({
-          variant: "destructive",
-          title: "Failed to add",
-          description: error || "Could not add item to cart.",
-        });
+        toast.error(`Failed to add item to cart: ${error.message}`);
       });
   };
 
@@ -67,11 +59,11 @@ const ProductCard = ({ product }) => {
   const handleWishlistToggle = (e) => {
     e.preventDefault(); // Prevents navigating to product page when clicking the heart
     if (isWishlisted) {
-      dispatch(removeFromWishlist(product._id));
-      toast({ title: "Removed from Wishlist" });
+      dispatch(removeFromWishlist(product.slug));
+      toast.success("Removed from Wishlist");
     } else {
-      dispatch(addToWishlist(product._id));
-      toast({ title: "Added to Wishlist" });
+      dispatch(addToWishlist(product.slug));
+      toast.success("Added to Wishlist");
     }
   };
 
@@ -79,7 +71,7 @@ const ProductCard = ({ product }) => {
     <Card className="flex flex-col overflow-hidden transition-all hover:shadow-lg h-full">
       <CardHeader className="p-0 relative">
         {/* Main product image links to the detail page */}
-        <Link to={`/product/${product._id}`}>
+        <Link to={`/product/${product.slug}`}>
           <img
             src={product.images[0] || '/placeholder.svg'}
             alt={product.name}
@@ -107,7 +99,7 @@ const ProductCard = ({ product }) => {
       <CardContent className="flex-grow p-4 flex flex-col">
         <p className="text-sm text-muted-foreground">{product.category.name}</p>
         <CardTitle className="text-lg font-semibold mt-1 flex-grow">
-          <Link to={`/product/${product._id}`} className="hover:text-primary transition-colors">
+          <Link to={`/product/${product.slug}`} className="hover:text-primary transition-colors">
             {product.name}
           </Link>
         </CardTitle>

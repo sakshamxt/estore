@@ -30,12 +30,12 @@ export const fetchProducts = createAsyncThunk(
 );
 
 
-export const fetchProductById = createAsyncThunk(
-  'products/fetchById',
-  async (productId, thunkAPI) => {
+export const fetchProductBySlug = createAsyncThunk(
+  'products/fetchBySlug', // Changed action type string
+  async (slug, thunkAPI) => {
     try {
-      // The API response is expected to be { data: { product: {...} } }
-      return await productService.getProductById(productId);
+      // Calls the new service function
+      return await productService.getProductBySlug(slug);
     } catch (error) {
       const message =
         (error.response && error.response.data && error.response.data.message) ||
@@ -53,8 +53,6 @@ export const productSlice = createSlice({
   initialState,
   reducers: {
     reset: (state) => {
-      // When resetting, we might want to preserve the list of products
-      // but clear the single product view.
       state.product = null;
       state.isError = false;
       state.isSuccess = false;
@@ -80,17 +78,16 @@ export const productSlice = createSlice({
         state.isError = true;
         state.message = action.payload;
       })
-      // ADD CASES for fetchProductById
-      .addCase(fetchProductById.pending, (state) => {
+      .addCase(fetchProductBySlug.pending, (state) => {
         state.isLoading = true;
-        state.product = null; // Clear previous product
+        state.product = null; 
       })
-      .addCase(fetchProductById.fulfilled, (state, action) => {
+      .addCase(fetchProductBySlug.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.product = action.payload.data.product;
+        state.product = action.payload.data; // Assuming backend returns { data: productObject }
       })
-      .addCase(fetchProductById.rejected, (state, action) => {
+      .addCase(fetchProductBySlug.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
